@@ -5,13 +5,20 @@ var address = require('address')
 
 const Controller= require("../controllers/Controller")
 const { route } = require('express/lib/application');
-const commonMw = require('../middlewares/commonMiddlewares')
+
 
 router.get("/test-me", function (req, res) {
     res.send("My first ever api!")
 })
 
-router.post('/createUser' ,commonMw.mid1, Controller.createUser)
-router.post('/createProduct', Controller.createProduct)
-router.post('/createOrder',commonMw.mid1,Controller.createOrder)
+router.post("/users", Controller.createUser)
+
+router.post("/login", Controller.loginUser)
+
+router.get("/users/:userId", Controller.getUserData)
+
+router.put("/users/:userId", Controller.updateUser)
+
+router.delete("/delete/:userId", Controller.deleteUser)
+
 module.exports = router;

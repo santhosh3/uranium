@@ -9,14 +9,6 @@ const app = express();
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
 
-// const global = function (req,res,next)
-// {
-//     var CurrentDate = moment().format("YYYY-MM-DD hh:mm:ss");
-//     console.log(CurrentDate,  '  ',  address.ip())
-//     next()   
-// }
-// app.use(global)
-
 
 mongoose.connect("mongodb+srv://Santhosh:iVkuUA8yQRgCS0bL@cluster0.xkjjs.mongodb.net/booksCollection-DB?retryWrites=true&w=majority", {
     useNewUrlParser: true

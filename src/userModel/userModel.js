@@ -1,23 +1,21 @@
 
 const mongoose = require('mongoose');
 
-const userSchema = new mongoose.Schema( {
-    name: String,
-    balance: {
-        type:Number,
-        default:100
+const JWTSchema = new mongoose.Schema( {
+    firstName : String,
+    lastName : String,
+    mobile : String,
+    emailId : String,
+    password : String,
+    gender : {
+        type : String,
+        enum : ['male','female','others']
     },
-    address: String,
-    age: Number,
-    gender: {
-        type:String,
-        enum:['male','female','others']
-    },
-    isfreeappuser : {
+    isDeletes : {
         type : Boolean,
         default : false
-    }
-
+    },
+    age: Number,
 }, { timestamps: true });
 
-module.exports = mongoose.model('userModel', userSchema)
+module.exports = mongoose.model('userJWT', JWTSchema)

@@ -1,90 +1,93 @@
+const jwt = require("jsonwebtoken");
+const userModel = require("../userModel/userModel");
 
- const UserModel = require("../userModel/userModel")
- const productModel= require("../productModel/productModel")
- const orderModel= require("../orderModel/orderModel")
-const userModel = require("../userModel/userModel")
-
-const createUser = async function(req,res)
+const createUser = async function (req, res) 
 {
-    let user = req.body
-    let userCreated = await UserModel.create(user)
-    res.send({ status: true, data : userCreated})
+    let data = req.body;
+    let savedData = await userModel.create(data);
+    console.log(req.newAtribute);
+    res.send({ msg: savedData });
+};
+module.exports.createUser = createUser
+
+const loginUser = async function (req, res) 
+{
+    let userName = req.body.emailId;
+    let password = req.body.password;
+    let user = await userModel.findOne({ emailId: userName, password: password });
+    if (!user)
+      return res.send
+      ({
+          status : false,
+          msg : "username or the password is not correct",
+      });
+      let token = jwt.sign(
+        {
+          userId: user._id.toString(),
+          batch: "Uranium",
+          organisation: "FUnctionUp",
+        },
+        "functionup-Uranium"
+      );
+      res.setHeader("x-auth-token", token);
+      res.send({ status: true, data: token });
+};
+module.exports.loginUser = loginUser
+
+const getUserData = async function (req, res) 
+{
+    let token = req.headers["x-Auth-token"];
+    if (!token) token = req.headers["x-auth-token"];
+    if (!token) return res.send({ status: false, msg: "token must be present" });
+    console.log(token);
+    let decodedToken = jwt.verify(token, "functionup-Uranium");
+    if (!decodedToken)
+    return res.send({ status: false, msg: "token is invalid" });
+    let userId = req.params.userId;
+    let userDetails = await userModel.findById(userId);
+    if (!userDetails)
+    return res.send({ status: false, msg: "No such user exists" });
+    res.send({ status: true, data: userDetails });
+};
+module.exports.getUserData = getUserData
+
+const updateUser = async function (req, res) 
+{
+    let userId = req.params.userId;
+    let user = await userModel.findById(userId);
+    if (!user) 
+    {
+      return res.send("No such user exists");
+    }
+    let userData = req.body;
+    let updatedUser = await userModel.findOneAndUpdate({ _id: userId }, userData);
+    res.send({ status: updatedUser, data: updatedUser })
+  };
+module.exports.updateUser = updateUser;
+
+const deleteUser = async function (req,res)
+{
+  let token = req.headers["x-Auth-token"];
+  if (!token) token = req.headers["x-auth-token"];
+  if (!token) return res.send({ status: false, msg: "token must be present" });
+  console.log(token);
+  let decodedToken = jwt.verify(token, "functionup-Uranium");
+  if (!decodedToken)
+  return res.send({ status: false, msg: "token is invalid" });
+
+  let userId = req.params.userId;
+  let user = await userModel.findById(userId);
+  if (!user) 
+  {
+    return res.send("No such user exists");
+  }
+  user.isDeletes = false
+  user.save()
+  res.send({data : user})
 }
-module.exports.createUser = createUser 
 
-const createProduct = async function(req,res)
-{
-    let user = req.body
-    let userProduct = await productModel.create(user)
-    res.send({ status: true, data : userProduct})
-}
-module.exports.createProduct = createProduct 
-
-const createOrder = async function(req,res)
-{
-    let data = req.body
-    let userId = req.body.userId
-    let productId = req.body.productId
-
-    let userValidate = await userModel.findById(userId)
-    if(!userValidate)  return res.send({msg : "userId invalid"})
-
-    let productValidate = await productModel.findById(productId)
-    if(!productValidate)  return res.send({msg : "productId invalid"})
-
-    let validation = req.headers.isfreeappuser
-    if(validation == 'true')
-     {
-         req.body.amount == 0
-         req.body.isfreeappuser == true
-         let SavedData = await orderModel.create(data)
-         res.send({msg : SavedData}) 
-     }
-     if(validation == 'false')
-      {
-          let productPrice = await productModel.findOne({_id: req.body.productId}).select({price:1})
-          let userBalance = await userModel.findById(userId).select({balance:1})
-          if(productPrice.price > userBalance.balance)
-            {
-                res.send({msg : "Insufficient balance"})
-            }
-            else{
-                let a = userBalance.balance - productPrice.price
-                await userModel.findByIdAndUpdate({_id:userId},{balance:a})
-                data.isfreeappuser = false
-                data.amount = productPrice.price
-                let SavedData = await orderModel.create(data)
-                res.send({msg : SavedData})
-            }
-      }
-    
-} 
-module.exports.createOrder = createOrder
+module.exports.deleteUser = deleteUser
 
 
 
-// let header = req.headers["isfreeappuser"]
-//     let price = await productModel.find({productId})
-//     let userValidation = await userModel.exists({userId})
-//     let productValidation = await productModel.exists({productId})
-//     if(userValidation){
-//         if(productValidation){
-//             let purchase = await orderModel.create(data)
-//             if(header == true){
-//                 await userModel.find({_id: userId}).update({balance: balance-price},{new:true}) 
-//             }
-//             res.send({success : purchase})
-//         }
-//         else{
-//             res.send({err: "the product is not present"})
-//         }
-//     }
-//     else{
-//         res.send({alert: "you are not a registered user,please register"})
-
-
-
-
-
-
-
+  
