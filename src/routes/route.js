@@ -3,8 +3,9 @@ const moment = require('moment');
 const router = express.Router();
 var address = require('address')
 
-const Controller= require("../controllers/Controller")
-const mid = require("../middlewares/commonMiddlewares")
+const Author = require("../controllers/AuthorController")
+const Publisher = require("../controllers/PublisherController")
+const Book = require("../controllers/BookController")
 const { route } = require('express/lib/application');
 
 
@@ -12,16 +13,11 @@ router.get("/test-me", function (req, res) {
     res.send("My first ever api!")
 })
 
-router.post("/users", Controller.createUser)
-
-router.post("/login", Controller.loginUser)
-
-router.get("/users/:userId", mid.mid1, Controller.getUserData)
-
-router.put("/users/:userId", mid.mid1,  Controller.updateUser)
-
-router.delete("/delete/:userId", mid.mid1, Controller.deleteUser)
-
-router.post("/users/:userId/posts", mid.mid1, Controller.postMessage)
+router.post("/creatAuthor" , Author.createAuthor);
+router.post("/createPublisher" , Publisher.createPublisher);
+router.post("/creatBooks" , Book.createBooks);
+router.post("/bookDetails" , Book.bookDetails);
+router.put("/updateByPublisher" , Book.updateByPublisher);
+router.put("/updateByRating" ,Book.updateByRating);
 
 module.exports = router;
