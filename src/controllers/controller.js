@@ -30,6 +30,7 @@ const loginUser = async function (req, res)
    
     let userName = req.body.emailId;
     let password = req.body.password;
+    try{
     let user = await userModel.findOne({ emailId: userName, password: password })
     if (!user)
       return res.send
@@ -46,22 +47,32 @@ const loginUser = async function (req, res)
         "functionup-Uranium"
       );
       res.setHeader("x-auth-token", token);
-      res.send({ status: true, data: token });
+      res.status(201).send({ status: true, data: token });
+    }
+    catch(err) {
+      res.status(400).send({msg: "error", err:err.message})
+    }
 };
 module.exports.loginUser = loginUser
 
 const getUserData = async function (req, res) 
 {
+  try{
     let userId = req.params.userId;
     let userDetails = await userModel.findById(userId);
     if (!userDetails)
     return res.send({ status: false, msg: "No such user exists" });
-    res.send({ status: true, data: userDetails });
+    res.status(200).send({ status: true, data: userDetails });
+  }
+  catch(err){
+    res.status(400).send({msg: "error", err:err.message})
+  }
 };
 module.exports.getUserData = getUserData
 
 const updateUser = async function (req, res) 
 {
+  try{
     let userId = req.params.userId;
     let user = await userModel.findById(userId);
     if (!user) 
@@ -71,25 +82,32 @@ const updateUser = async function (req, res)
     let userData = req.body;
     let updatedUser = await userModel.findOneAndUpdate({ _id: userId }, userData, {new:true});
     res.send({ status: updatedUser, data: updatedUser })
+  }
+  catch(err){
+    res.status(400).send({msg: "error", err:err.message})
+  }
   };
 module.exports.updateUser = updateUser;
 
 const deleteUser = async function (req,res)
 {
+  try {
   let userId = req.params.userId;
   let user = await userModel.findById(userId);
   if (!user) 
   {
     return res.send("No such user exists");
   }
-  // user.isDeletes = true
-  // user.save()
-  // res.send({data : user})  or
   let deleteUser = await userModel.findByIdAndUpdate(
     {_id : userId},
     {$set: {isDeletes : true}},
     {new : true}
   )
+  res.status(200).send({data: deleteUser})
+  }
+  catch(err){
+    res.status(400).send({msg: "error", err:err.message})
+  }
 
 }
 
