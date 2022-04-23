@@ -48,6 +48,7 @@ const updateByPublisher = async function (req,res)
          await bookModel.updateMany({publisher: pub[i]._id}, {isHardCover: true}) 
     } 
     res.send({msg:"done"})
+    res.send({msg: pub});
  }
 
  const updateByRating = async function (req,res)
@@ -58,6 +59,7 @@ const updateByPublisher = async function (req,res)
          await bookModel.updateMany({author: auth[i]._id}, { $inc: {price:10}})
     } 
     res.send({msg: auth})
+    res.send({msg: "done"})
  }
 
  

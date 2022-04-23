@@ -26,4 +26,4 @@ let bookSchema= new mongoose.Schema(
 , {timestamps : true})
 
 
-module.exports = mongoose.model('Newbook',bookSchema)
+module.exports = mongoose.model('New',bookSchema)
