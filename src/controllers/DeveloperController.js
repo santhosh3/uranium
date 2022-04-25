@@ -10,7 +10,7 @@ let creatDeveloper =async function(req,res)
 
 let scholarshipDevelopers =async function(req,res)
 { 
- let developer = await developerModel.find({$and:[{gender:"female"},{percentage:{$gte:10}}]})
+ let developer = await developerModel.find({$and:[{gender:"female"},{percentage:{$gte:70}}]})
  res.send({status: true, data: developer})
 }
 
