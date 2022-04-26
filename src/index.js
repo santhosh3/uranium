@@ -1,6 +1,6 @@
 const express = require('express');
 const moment = require('moment');
-var address = require('address')
+var address = require('address');
 const bodyParser = require('body-parser');
 const route = require('./routes/route.js');
 const { default: mongoose } = require('mongoose');
